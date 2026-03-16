@@ -1,0 +1,154 @@
+directory: /dat/tl/a/mu/lib
+library: /dat/tl/a/mu/library.db
+import:
+    write: yes
+    move: yes
+    copy: no
+    delete: no
+    autotag: yes
+    timid: no
+    resume: ask
+    incremental: no
+    none_rec_action: ask
+    log:
+    quiet: no  # enable with command line option
+    quiet_fallback: skip
+    default_action: apply
+    #singletons: no
+    languages: []
+    detail: no
+    flat: no
+original_date: yes
+per_disc_numbering: yes
+# files matching these patterns are deleted from source after import
+#clutter: ["Thumbs.DB", ".DS_Store", "*.m3u", ".pls", "*.jpg"]
+#ignore: [".*", "*~", "System Volume Information"]
+paths:
+    default: %lower{%asciify{%substitute{$albumartist}/$year\$album%aunique{}/$track\$title}}
+    singleton: a-singleton/%lower{%asciify{$artist/$title}}
+    comp: a-compilations/%lower{%asciify{$album%aunique{}/$track\$title}}
+    albumtype:soundtrack: a-soundtracks/$album/$track\$title
+# replace special characters in generated filenames
+replace:
+    '[\\/]': _
+    '^\.': _
+    '[\x00-\x1f]': _
+    '[<>:"\?\*\|]': _
+    '\.$': _
+    '\s+$': ''
+    '\s': '_'
+path_sep_replace: _
+max_filename_length: 50  # unlimited
+art_filename: cover  # results in "cover.jpg"
+# use mutliple threads during import
+threaded: yes
+timeout: 5.0
+verbose: no
+# user interface
+color: yes
+list_format_item: %upper{$artist} - $album - $track. $title
+list_format_album: %upper{$albumartist} - $album
+time_format: '%Y-%m-%d %H:%M:%S'
+terminal_encoding: utf8
+ui:
+    terminal_width: 80
+    length_diff_thresh: 10.0
+# auto tagger
+match:
+    strong_rec_thresh: 0.1    # match 90% or better for auto import
+    medium_rec_thresh: 0.5
+    rec_gap_thresh: 0.5
+    max_rec:
+        missing_tracks: medium
+        unmatched_tracks: medium
+    distance_weights:
+        source: 2.0
+        artist: 3.0
+        album: 3.0
+        media: 1.0
+        mediums: 1.0
+        year: 1.0
+        country: 0.5
+        label: 0.5
+        catalognum: 0.5
+        albumdisambig: 0.5
+        album_id: 5.0
+        tracks: 2.0
+        missing_tracks: 0.9
+        unmatched_tracks: 0.6
+        track_title: 3.0
+        track_artist: 2.0
+        track_index: 1.0
+        track_length: 2.0
+        track_id: 5.0
+    preferred:
+        countries: []
+        media: []
+        original_year: no
+    ignored: []
+    track_length_grace: 10
+    track_length_max: 30
+plugins: [
+    lyrics,
+    fetchart,
+    embedart,
+    lastgenre,
+    scrub,
+    mbsync,
+    mpdupdate,
+    mpdstats,
+    missing,
+    duplicates,
+    rewrite,
+    edit,
+    chroma,
+    substitute
+#echonest_tempo,
+#discogs,
+]
+pluginpath: ~/.local/share/beets/plugins
+rewrite:
+    artist 2pac: tupac
+lyrics:
+    auto: yes
+    fallback: ''
+lastgenre:
+    whitelist: ~/.config/beets/genres.txt
+    canoncical: ~/.config/beets/genres-tree.yaml
+    fallback: ''
+    source: artist
+fetchart:
+    auto: yes
+    maxwidth: 300
+    cautious: true
+    cover_names: cover folder
+embedart:
+    auto: yes
+    maxwidth: 300
+replaygain:
+    auto: yes
+    overwrite: yes
+    albumgain: yes
+scrub:
+    auto: yes
+# required for mpdstats
+mpd:
+    host: localhost
+    port: 6600
+#password:  # none
+mpdstats:
+    rating: False
+    # two ratings are calculated:
+    # "rolling" based on recent development
+    # "stable" based on all-time development
+    # rating mix 0.0 is all "rolling", 1.0 is all "stable"
+    rating_mix: 0.75
+missing:
+    format: $albumartist - $album - $track - $title
+    count: no
+    total: no
+duplicates:
+    checksum: no  # expensive
+#checksum: yes
+#echonest_tempo:
+#    auto: yes
