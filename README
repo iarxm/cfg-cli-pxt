@@ -1,1 +1,3 @@
 public cli prog extras env configs
+
+mpv included as it can run as purely cli
